@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Xcode 7.0">
+    <entity name="Calendar" representedClassName="Calendar" syncable="YES">
+        <attribute name="dayDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="eveningArray" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="eveningNews" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="isEvening" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isMorning" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="morningArray" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="morningNews" optional="YES" attributeType="Binary" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Calendar" positionX="-54" positionY="-9" width="128" height="150"/>
+    </elements>
+</model>
