@@ -22,36 +22,39 @@
 #import "UIViewExt.h"
 #import "CustomVisualEffectView.h"
 #import "WXRefresh.h"
+#import "CircularLoaderView.h"
 
-#define KHeadViewHeight 500
-#define KHeadToBeCutOff 70
-
+//头视图的高度
+static const NSInteger KHeadViewHeight = 500;
+//头视图需要被裁剪掉的高度
+static const NSInteger KHeadToBeCutOff = 70;
+//当时间状态发生改变的时候发送通知的名字
 static NSString * const HomeStateChange = @"HomeStateChange";
+//倒计时界面里的滑动视图,每个button的间隔
 static const NSInteger kDistanceFromButtonToCell = 15;
 
 @interface HomeViewController () <UITableViewDelegate,UITableViewDataSource>
 {
     UITableView *_tableView;
-    UIView *_tableHeadView;
-    UIImageView *_headView;
-    UILabel *_dateLabel;
-    NSArray *_colorArray;               //颜色组
+    UIImageView *_headView;     //首页头视图
+    UILabel *_dateLabel;        //显示日期的label
+    NSArray *_colorArray;       //颜色组
     
     UILabel *_countLabel;               //计数的label
     NSInteger _selectedNumber;          //当前选中的单元格
-    UIView *_footView;
-    CustomVisualEffectView *_effectView;
-    CGFloat _oldOffSet;
-    UIButton *_countDownButton;
-    HomeVisualEffectView *_homeEffView;
+    UIView *_footView;                  //但新闻没有阅读完最后一个单元格视图
+    CustomVisualEffectView *_effectView;    //日历视图
+    CGFloat _oldOffSet;         //tableview的偏移量,用来判断是否显示倒计时的button
+    UIButton *_countDownButton; //倒计时button
+    HomeVisualEffectView *_homeEffView;     //倒计时页面
     NSDate *_date;    //当前的时间
     BOOL _isReadArray[8];   //已经阅读过的数组
     BOOL _isAnimationArray[8];    //已经阅读并且执行过动画的数组
     BOOL _isStateAllRead;    //当前时间段的的是否全部读完
     NSInteger _state;    //100代表前一天晚上,101代表白天,102代表晚上
     NSTimer *_timer;    //添加一个计时器,时刻检测当前的状态是白天还是晚上
-    NSMutableArray *_newsArray;
-    UIScrollView *_scrollView;
+    NSMutableArray *_newsArray;     //存放新闻的数组
+    UIScrollView *_scrollView;      //倒计时界面下的滑动视图
     CustomVisualEffectView *_CusEffectView;
     NSInteger _buttonSelect;   //记录选中的button的tag值
     UITableView *_moreTabView;    //更多新闻里面的tableview
@@ -66,6 +69,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     [super viewDidLoad];
     //先创建当天的数据库
     
+    //当前的日期
     _date = [NSDate date];
     [[CoreDataManager shareManager] saveDataWithDate:_date];
     _state = [_date timeState];
@@ -77,15 +81,15 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     [self creatFootView];
     //创建单元格
     [self creatTableView];
-    //创建日期
-    [self creatDateLabel];
     //创建倒计时的那个视图
     [self creatCountDown];
+    //创建日期
+    [self creatDateLabel];
     //创建日历视图
     [self creatToolbar];
     
 }
-
+//创建定时器,用来监测时间状态
 - (void)creatTimer {
     
     _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timeAction) userInfo:nil repeats:YES];
@@ -95,16 +99,16 @@ static const NSInteger kDistanceFromButtonToCell = 15;
 
 - (void)timeAction {
     
+    //获取当前的日期
     NSDate *Date = [NSDate date];
     NSDate *aDate = nil;
     //获取当前时间的day跟hour
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute;
     NSDateComponents *cmp = [calendar components:unit fromDate:Date];
-    
+    //通过nsdateformatter将字符创转化成nsdate
     NSDateFormatter *matter = [[NSDateFormatter alloc] init];
     matter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-    //    NSDate *aDate = [aMatter dateFromString:string];
     //判断是hour在哪个时间段
     NSInteger nowHour = cmp.hour;
     if (nowHour>=0 && nowHour<=8) {
@@ -123,7 +127,6 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     }
     //距离更换的时间
     NSTimeInterval time = [aDate timeIntervalSinceDate:[NSDate date]];
-//    NSLog(@"shijian %f",time);
     //因为是double类型的,当它在0到1之间,即代表主题要更换了
     if (time<1 && time >=0) {
         
@@ -151,20 +154,21 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     _countDownButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _countDownButton.frame = CGRectMake(KScreenWidth - 60, 20, 40, 40);
     _countDownButton.layer.cornerRadius = 20;
-    _countDownButton.backgroundColor = [UIColor blackColor];
+    [_countDownButton setImage:[UIImage imageNamed:@"190-menu.png"] forState:UIControlStateNormal];
     [_countDownButton addTarget:self action:@selector(countDownAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_countDownButton];
+    
+    [self.view insertSubview:_countDownButton belowSubview:_loginView];
 }
 //倒计时界面
 - (void)countDownAction {
-    
+    //创建倒计时界面,自定义的毛玻璃视图
     UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     _homeEffView = [[HomeVisualEffectView alloc] initWithEffect:effect withFrame:self.view.bounds];
     [self.view addSubview:_homeEffView];
     _homeEffView.hidden = YES;
-    
+    //创建毛玻璃视图下面的滑动视图
     [self creatScrollView];
-    
+    //一个动画效果
     [UIView transitionWithView:self.view
                       duration:0.5
                        options:UIViewAnimationOptionTransitionCrossDissolve
@@ -185,21 +189,13 @@ static const NSInteger kDistanceFromButtonToCell = 15;
         
         return;
     }
-    
-    
-//    int j = 0;
-//    for (int i = 0; i < 8; i++) {
-//        
-//        if (_isReadArray[i]) {
-//            
-//            j++;
-//        }
-//    }
+    //因为selectednumber的初始值时0,所以在选中新闻之后,_selenum是index.row+100
     _selectedNumber -= 100;
-    
+    //判断当前的新闻被阅读过没有,如果没有的话就执行一个动画,然后将阅读记录保存到数据库
     BOOL isRead = [[CoreDataManager shareManager] fetchOneNewsIsBeenRead:_date withState:_state withNumber:_selectedNumber];
+    
     if (!isRead) {
-        
+        //如果没有被阅读过 动画
         [UIView animateWithDuration:0.3 delay:1 options:UIViewAnimationOptionTransitionNone animations:^{
             
             NSIndexPath *index = [NSIndexPath indexPathForRow:(_selectedNumber) inSection:0];
@@ -220,28 +216,20 @@ static const NSInteger kDistanceFromButtonToCell = 15;
 
     
 }
-//全部读完之后,动画并且更换tableview的尾视图
-- (void)readAll {
-    
-    
-    
-    
-    
-}
-
+//隐藏系统的状态栏
 - (BOOL)prefersStatusBarHidden {
     
     return YES;
 }
-
+//创建tableview最后一个单元格
 - (void)creatFootView {
-    
+    //初始化_selnum;
     _selectedNumber = 200;
-    
+    //创建视图
     _footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, KScreenWidth, KScreenWidth)];
     CGFloat basicWith = KScreenWidth / 6;
     CGRect buttonFrame = CGRectZero;
-    
+    //创建视图上的八个按钮,为了自动布局,所以要写很多计算代码
     for (int i = 0; i < 8; i++) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -272,7 +260,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             
             button.center = CGPointMake(1.7 * basicWith, 1.6 * basicWith);
         }
-        
+        //设置button的一些基本属性
         button.layer.cornerRadius = 10;
         button.layer.borderWidth = 1;
         button.layer.borderColor = [UIColor lightGrayColor].CGColor;
@@ -281,7 +269,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
         [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [button setFont:[UIFont systemFontOfSize:12]];
         [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
-        
+        //先从数据库读取到这条新闻有没有被阅读过,如果有的话就怎么样怎么样
         BOOL isBeenRead = [[CoreDataManager shareManager] fetchOneNewsIsBeenRead:_date withState:_state withNumber:i];
         if (isBeenRead == YES) {
             
@@ -291,16 +279,16 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             _isAnimationArray[i] = YES;
             
         }
+        //根据时间段来选择背景颜色
         _footView.backgroundColor = [UIColor blackColor];
         if (_state == 101) {
             _footView.backgroundColor = [UIColor whiteColor];
         }
         
-        
         [_footView addSubview:button];
         
     }
-    
+    //几个小label
     UILabel *fixedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 3 * basicWith, 20)];
     fixedLabel.center = CGPointMake(_footView.center.x, 3 * basicWith - 20);
     fixedLabel.font = [UIFont systemFontOfSize:13];
@@ -315,6 +303,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     
     [_footView addSubview:fixedLabel];
     
+    //用来显示你读了多少条新闻的label
     _countLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 3 * basicWith, 40)];
     _countLabel.center = CGPointMake(_footView.center.x, 3 * basicWith);
     _countLabel.font = [UIFont systemFontOfSize:26];
@@ -328,15 +317,15 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     _countLabel.text = [NSString stringWithFormat:@"%ld of 8",numberOfRead];
     
     UIButton *calenButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    calenButton.frame = CGRectMake(KScreenWidth - 25, 10, 15, 15);
-    calenButton.backgroundColor = [UIColor blackColor];
+    calenButton.frame = CGRectMake(KScreenWidth - 40, 15, 30, 30);
+    [calenButton setImage:[UIImage imageNamed:@"date512*512.png"] forState:UIControlStateNormal];
     [calenButton addTarget:self action:@selector(calendarButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [_footView addSubview:calenButton];
     
     [_footView addSubview:_countLabel];
     
 }
-
+//从footview上button的点击事件,通过这些button也能够阅读新闻
 - (void)buttonAction:(UIButton *)button {
     
     NewsViewController *vc = [[NewsViewController alloc] init];
@@ -345,7 +334,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     _selectedNumber = button.tag;
     
 }
-
+//文字长度自适应
 - (CGRect)setTextViewFrame:(NSString *)text {
     
     CGSize size = CGSizeMake(KScreenWidth - 50, 1000);
@@ -354,7 +343,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     CGRect rect = [text boundingRectWithSize:size options:NSStringDrawingUsesLineFragmentOrigin attributes:dic context:nil];
     return rect;
 }
-
+//创建新闻数组,如果数据库中有数据就是用旧数据,否则请求新的数据
 - (void)creatInformation {
     
     _colorArray = @[[UIColor greenColor],
@@ -406,7 +395,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             }
         }
         _newsArray = [mArray mutableCopy];
-        [[CoreDataManager shareManager] saveNewsDataWithDate:[NSDate date] withState:_state withNews:_newsArray];
+        [[CoreDataManager shareManager] saveNewsDataWithDate:_date withState:_state withNews:_newsArray];
         
     } else {
         
@@ -415,7 +404,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     }
     
 }
-
+//创建日期的label
 - (void)creatDateLabel {
     
     NSDateFormatter *matter = [[NSDateFormatter alloc] init];
@@ -426,16 +415,16 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     _dateLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:30];
     _dateLabel.text = string;
     _dateLabel.textColor = [UIColor whiteColor];
-
-    [_headView addSubview:_dateLabel];
+    //添加到tableview上去
     [_tableView addSubview:_dateLabel];
     
 }
-
+//创建tableview
 - (void)creatTableView {
     
+    //初始化_isStateAllRead
     _isStateAllRead = [[CoreDataManager shareManager] fetchIsAllReadWithDate:_date withState:_state];
-   
+   //创建_tableView
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -447,6 +436,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     [_tableView registerClass:[HomeTableViewCell class] forCellReuseIdentifier:@"HomeTableViewCell"];
     [self.view addSubview:_tableView];
     //添加上拉刷新
+    //防止循环引用
     __weak HomeViewController *weakSelf = self;
     
     [_tableView addInfiniteScrollingWithActionHandler:^{
@@ -461,9 +451,37 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     NSURL *imageURL = [NSURL URLWithString:news.thumbnail_pic_s];
     _tableView.contentInset = UIEdgeInsetsMake(KHeadViewHeight-KHeadToBeCutOff, 0, 0, 0);
     _headView = [[UIImageView alloc] initWithFrame:CGRectMake(0, -KHeadViewHeight+KHeadToBeCutOff, KScreenWidth, KHeadViewHeight)];
-    [_headView sd_setImageWithURL:imageURL];
+    //加载头视图,自定义的动画效果,很赞!!!
+    [self setHeadViewImage:imageURL];
+    //将头视图裁剪一下
     [self creatHeadViewWithRect:_headView.frame];
+    //加载头视图
     [_tableView addSubview:_headView];
+    
+}
+#pragma mark 开场的动画效果
+- (void)setHeadViewImage:(NSURL *)url {
+    //如果url是nil的话就返回,反正程序崩溃
+    if (url == nil) {
+        return;
+    }
+    //开场的视图
+    _loginView = [[CircularLoaderView alloc] initWithFrame:self.view.frame];
+    [self.view insertSubview:_loginView aboveSubview:_headView];
+    
+    __weak HomeViewController *weakSelf = self;
+    
+    [_headView sd_setImageWithURL:url placeholderImage:nil options:SDWebImageCacheMemoryOnly progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+        
+        weakSelf.loginView.progress = (receivedSize / expectedSize) / 1000;
+        
+        
+    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        
+        [weakSelf.loginView reveal];
+
+    }];
+    
     
 }
 #pragma mark 创建更多新闻里面的tableView
@@ -478,26 +496,19 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     _moreTabView.tag = 100;
     
     __weak UITableView *weekView = _moreTabView;
+    //加载上啦刷新动画
     [_moreTabView addPullDownRefreshBlock:^{
         
         __strong UITableView *strongView = weekView;
         [strongView removeFromSuperview];
         
     }];
-    
+    //注册一下单元格,一边单元格复用
+    [_moreTabView registerClass:[HomeTableViewCell class] forCellReuseIdentifier:@"HomeTableViewCell"];
+    //停止动画
     [_tableView.infiniteScrollingView stopAnimating];
     
-    [_moreTabView addInfiniteScrollingWithActionHandler:^{
-        
-        
-    }];
-    [_moreTabView registerClass:[HomeTableViewCell class] forCellReuseIdentifier:@"HomeTableViewCell"];
-
-    
-    
 }
-
-
 
 #pragma mark ---UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -507,12 +518,11 @@ static const NSInteger kDistanceFromButtonToCell = 15;
         return 14;
     }
     
-    
     return 9;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    //通过tableview的tag来判断是哪个taleview
     if (tableView.tag == 100) {
         
         HomeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HomeTableViewCell"];
@@ -561,12 +571,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             if (!_isStateAllRead) {
                 
                 [cell.contentView addSubview:_footView];
-                
-//                if (_selectedNumber<0 || _selectedNumber>7) {
-//                    
-//                    return cell;
-//                }
-
+                //计算哪几条新闻是阅读过了可是没有执行过动画
                 int j = 0;
                 NSMutableArray *mArray = [[NSMutableArray alloc] init];
                 for (int i = 0; i < 8; i++) {
@@ -580,9 +585,10 @@ static const NSInteger kDistanceFromButtonToCell = 15;
                         j++;
                     }
                 }
-                
+                //停顿一下
                 [NSThread sleepForTimeInterval:0.1];
                 NSInteger numberOfRead = [[CoreDataManager shareManager] fetchTheNumberOfReadWithDate:_date withState:_state];
+                //对阅读过的却没执行过动画的执行动画效果
                 for (NSNumber *number in mArray) {
                     
                     NSInteger tag = [number intValue] + 100;
@@ -606,7 +612,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
                     _isStateAllRead = YES;
                     //更新数据库
                     [[CoreDataManager shareManager] saveDataWithDate:_date withState:_state];
-                    
+                    //当全部阅读过之后,执行一个动画
                     for (int i = 0; i < 8; i++) {
                         
                         UIButton *button = [_footView viewWithTag:i + 100];
@@ -637,7 +643,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
                 }
                 
             } else {
-                
+                //如果已经执行过动画了,就直接显示那个视图
                 UIView *view = [self getLastCellView];
                 [cell.contentView addSubview:view];
             }
@@ -655,6 +661,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
         
         return cell;
     }
+    //创建新闻model
     News *news = _newsArray[indexPath.row];
     UIColor *color = _colorArray[indexPath.row];
     CGRect textFrame = [self setTextViewFrame:news.title];
@@ -704,33 +711,25 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     aLabel.text = @"Do you know..?";
     aLabel.font = [UIFont systemFontOfSize:14];
     [view addSubview:aLabel];
-    
+    //创建按钮,点击能够显示日历
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(KScreenWidth - 50, 20, 30, 30);
-    button.backgroundColor = [UIColor blackColor];
+    [button setImage:[UIImage imageNamed:@"date512*512.png"] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(calendarAction) forControlEvents:UIControlEventAllEvents];
     [view addSubview:button];
-    
+    //先创建好日历视图
     UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     CGRect frame = CGRectMake(0, KScreenHeight, KScreenWidth, KScreenHeight);
     
     _effectView = [[CustomVisualEffectView alloc] initWithEffect:effect withFrame:frame];
-    
-    UIButton *calenButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    calenButton.frame = CGRectMake(KScreenWidth - 25, 10, 15, 15);
-    calenButton.backgroundColor = [UIColor blackColor];
-    [calenButton addTarget:self action:@selector(calendarButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    [_effectView addSubview:calenButton];
-    
+    //添加日历视图
     [self.view addSubview:_effectView];
     
     return view;
     
 }
 
-
-
-
+#pragma mark 显示日历
 - (void)calendarAction {
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
@@ -744,6 +743,17 @@ static const NSInteger kDistanceFromButtonToCell = 15;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    if (tableView.tag == 100) {
+        
+        News *news = [[CoreDataManager shareManager] fectDataWithDate:_date withSate:_state][indexPath.row];
+        NewsViewController *vc = [[NewsViewController alloc] init];
+        vc.news = news;
+        
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
+    
+    //判断选中的是哪一个单元格
     if (indexPath.row == 8 && _isStateAllRead) {
         
         MottoViewController *vc = [[MottoViewController alloc] init];
@@ -755,26 +765,19 @@ static const NSInteger kDistanceFromButtonToCell = 15;
         
         return;
     }
-    
+    //将数据传递给新闻界面
     News *news = [[CoreDataManager shareManager] fectDataWithDate:_date withSate:_state][indexPath.row];
     NewsViewController *vc = [[NewsViewController alloc] init];
     vc.news = news;
     
     [self.navigationController pushViewController:vc animated:YES];
-    
-    if (tableView.tag == 100) {
-        
-        return;
-    }
-    
-    
+    //改变_secnum的值
     _selectedNumber = indexPath.row + 100;
     
 }
-
+//裁剪headview
 - (void)creatHeadViewWithRect:(CGRect)rect {
     
-
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(0, 0)];
     [path addLineToPoint:CGPointMake(rect.size.width, 0)];
@@ -788,9 +791,9 @@ static const NSInteger kDistanceFromButtonToCell = 15;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    //先判断是哪一个tableview
     if (tableView.tag == 100) {
-        
+        //计算文本的高度
         News *news = _newsArray[indexPath.row + 8];
         NSString *string = news.title;
         CGRect rect = [self setTextViewFrame:string];
@@ -807,7 +810,6 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     News *news = _newsArray[indexPath.row];
     NSString *string = news.title;
     CGRect rect = [self setTextViewFrame:string];
-    
     CGFloat height = rect.size.height - 60;
     
     if (indexPath.row == 0) {
@@ -818,7 +820,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+    //根据偏移量来判断是向上还是乡下滑动,然后决定是否显示按钮
     if (_tableView.contentOffset.y < _oldOffSet) {
         
         _countDownButton.hidden = NO;
@@ -859,7 +861,6 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     _scrollView.showsHorizontalScrollIndicator = NO;
     _scrollView.pagingEnabled = NO;
     _scrollView.bounces = NO;
-//    _scrollView.backgroundColor = [UIColor redColor];
     //怎么样判断要创建多少个子视图呢
     for (int i = 0; i < 5; i++) {
         
@@ -874,6 +875,12 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             firstButton.layer.cornerRadius = buttonRadius;
             firstButton.tag = 1;
             firstButton.backgroundColor = [UIColor greenColor];
+            [firstButton setImage:[UIImage imageNamed:@"o101moon.png"] forState:UIControlStateNormal];
+            if (_buttonSelect == 1) {
+                
+                [firstButton setImage:[UIImage imageNamed:@"o102moon.png"] forState:UIControlStateNormal];
+                
+            }
             [firstButton addTarget:self action:@selector(buttonChangedate:) forControlEvents:UIControlEventTouchUpInside];
             //根据tag值来确定是哪个View
             firstView.tag = 0;
@@ -916,7 +923,6 @@ static const NSInteger kDistanceFromButtonToCell = 15;
         if (_buttonSelect == morButton.tag) {
             [morButton setImage:[UIImage imageNamed:@"o102sun.png"] forState:UIControlStateNormal];
         }
-//        morButton.backgroundColor = [UIColor purpleColor];
         [morButton addTarget:self action:@selector(buttonChangedate:) forControlEvents:UIControlEventTouchUpInside];
         [bgView addSubview:morButton];
         //晚上按钮
@@ -934,7 +940,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             [eveButton setImage:[UIImage imageNamed:@"o102moon.png"] forState:UIControlStateNormal];
 
         }
-//        eveButton.backgroundColor = [UIColor yellowColor];
+
         [eveButton addTarget:self action:@selector(buttonChangedate:) forControlEvents:UIControlEventTouchUpInside];
         [bgView addSubview:eveButton];
         //绘制虚线
@@ -969,15 +975,6 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     
 }
 
-- (void)calendarButtonAction {
-    
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
-        
-        _CusEffectView.transform = CGAffineTransformMakeTranslation(0, -KScreenHeight);
-        
-    } completion:nil];
-
-}
 //选择切换不同时段的新闻
 - (void)buttonChangedate:(UIButton *)button {
     
@@ -1020,7 +1017,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     
     News *news = _newsArray[0];
     NSURL *imageURL = [NSURL URLWithString:news.thumbnail_pic_s];
-    [_headView sd_setImageWithURL:imageURL];
+    [self setHeadViewImage:imageURL];
     
     //改变按钮的背景图片
     //判断按钮跟上次选中的是不是同一个,如果不是的话要吧上一个选中的图片换回去

@@ -49,7 +49,7 @@
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     backButton.frame = CGRectMake(KScreenWidth/2 - 10, KScreenHeight - 40, 20, 20);
     backButton.layer.cornerRadius = 10;
-    backButton.backgroundColor = [UIColor redColor];
+    [backButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(backAction1) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:backButton];
     
@@ -66,7 +66,6 @@
    //
     
 
-//    CGFloat explainWidth = 2 * (KScreenWidth - 20) / 3 / 4;
     for (int i = 0; i < 4; i++) {
         
         if (i == 0) {

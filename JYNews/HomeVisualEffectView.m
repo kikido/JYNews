@@ -141,9 +141,7 @@
     alayer.fillColor = NULL;
     alayer.strokeStart = 0;
     alayer.anchorPoint = CGPointMake(1, 1);
-//    alayer.position = CGPointMake(0, 200);
     alayer.strokeEnd = 0;
-//    alayer.affineTransform = CGAffineTransformMakeRotation(-2*M_PI_4);
     [self.layer addSublayer:alayer];
     
     

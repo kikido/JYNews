@@ -38,6 +38,7 @@
 		1D0AE03F1D37DBD30047FF10 /* setting32*32.png in Resources */ = {isa = PBXBuildFile; fileRef = 1D0AE0351D37DBD30047FF10 /* setting32*32.png */; };
 		1D0AE0401D37DBD30047FF10 /* setting32*32_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1D0AE0361D37DBD30047FF10 /* setting32*32_2.png */; };
 		1D11CAA31D2F3EDF00DFC037 /* CustomVisualEffectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D11CAA21D2F3EDF00DFC037 /* CustomVisualEffectView.m */; };
+		1D1665851D3D1CB800D618B5 /* CircularLoaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D1665841D3D1CB800D618B5 /* CircularLoaderView.m */; };
 		1D24FC921D3906BB008EF97A /* 101moon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D24FC8E1D3906BB008EF97A /* 101moon.jpg */; };
 		1D24FC931D3906BB008EF97A /* 101sun.png in Resources */ = {isa = PBXBuildFile; fileRef = 1D24FC8F1D3906BB008EF97A /* 101sun.png */; };
 		1D24FC941D3906BB008EF97A /* 102moon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D24FC901D3906BB008EF97A /* 102moon.jpg */; };
@@ -78,6 +79,7 @@
 		1D8549C81D24015500C571CB /* UIViewExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D8549C71D24015500C571CB /* UIViewExt.m */; };
 		1D8549CD1D241F4A00C571CB /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1D8549CC1D241F4A00C571CB /* 1.jpg */; };
 		1D90BCDE1D321E1C009C8E7C /* HomeVisualEffectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D90BCDD1D321E1C009C8E7C /* HomeVisualEffectView.m */; };
+		1DEAB9A01D3D255800EFF08B /* 190-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = 1DEAB99F1D3D255800EFF08B /* 190-menu.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -135,6 +137,8 @@
 		1D0AE0361D37DBD30047FF10 /* setting32*32_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "setting32*32_2.png"; sourceTree = "<group>"; };
 		1D11CAA11D2F3EDF00DFC037 /* CustomVisualEffectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomVisualEffectView.h; sourceTree = "<group>"; };
 		1D11CAA21D2F3EDF00DFC037 /* CustomVisualEffectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomVisualEffectView.m; sourceTree = "<group>"; };
+		1D1665831D3D1CB800D618B5 /* CircularLoaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularLoaderView.h; sourceTree = "<group>"; };
+		1D1665841D3D1CB800D618B5 /* CircularLoaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircularLoaderView.m; sourceTree = "<group>"; };
 		1D24FC8E1D3906BB008EF97A /* 101moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 101moon.jpg; sourceTree = "<group>"; };
 		1D24FC8F1D3906BB008EF97A /* 101sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 101sun.png; sourceTree = "<group>"; };
 		1D24FC901D3906BB008EF97A /* 102moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 102moon.jpg; sourceTree = "<group>"; };
@@ -202,6 +206,7 @@
 		1D8549CC1D241F4A00C571CB /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
 		1D90BCDC1D321E1C009C8E7C /* HomeVisualEffectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeVisualEffectView.h; sourceTree = "<group>"; };
 		1D90BCDD1D321E1C009C8E7C /* HomeVisualEffectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeVisualEffectView.m; sourceTree = "<group>"; };
+		1DEAB99F1D3D255800EFF08B /* 190-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "190-menu.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -270,6 +275,7 @@
 		1D0AE02C1D37DBD30047FF10 /* 图标 */ = {
 			isa = PBXGroup;
 			children = (
+				1DEAB99F1D3D255800EFF08B /* 190-menu.png */,
 				1D24FC9C1D392C97008EF97A /* o101moon.png */,
 				1D24FC9D1D392C97008EF97A /* o101sun.png */,
 				1D24FC9E1D392C97008EF97A /* o102moon.png */,
@@ -442,11 +448,11 @@
 		1D8549621D2257F400C571CB /* JYNews */ = {
 			isa = PBXGroup;
 			children = (
+				1D8549C41D24012F00C571CB /* 第三方框架 */,
 				1D0AE02C1D37DBD30047FF10 /* 图标 */,
 				1D4AB49B1D2E1EB7009EF7F5 /* CoreData */,
 				1D4AB4621D2CD37A009EF7F5 /* Calendar */,
 				1D4AB45D1D2CB43F009EF7F5 /* Motto */,
-				1D8549C41D24012F00C571CB /* 第三方框架 */,
 				1D4AB4501D2A64EB009EF7F5 /* NEWS */,
 				1D8549A21D23827F00C571CB /* Home */,
 				1D8549661D2257F400C571CB /* AppDelegate.h */,
@@ -484,6 +490,8 @@
 		1D8549A31D23829F00C571CB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1D1665831D3D1CB800D618B5 /* CircularLoaderView.h */,
+				1D1665841D3D1CB800D618B5 /* CircularLoaderView.m */,
 				1D4AB4571D2B49F4009EF7F5 /* HomeTableViewCell.h */,
 				1D4AB4581D2B49F4009EF7F5 /* HomeTableViewCell.m */,
 				1D90BCDC1D321E1C009C8E7C /* HomeVisualEffectView.h */,
@@ -603,6 +611,7 @@
 				1D24FCA21D392C97008EF97A /* o102moon.png in Resources */,
 				1D0AE0381D37DBD30047FF10 /* back32*32_2.png in Resources */,
 				1D24FC941D3906BB008EF97A /* 102moon.jpg in Resources */,
+				1DEAB9A01D3D255800EFF08B /* 190-menu.png in Resources */,
 				1D0AE0371D37DBD30047FF10 /* back32*32.png in Resources */,
 				1D24FC9B1D392B62008EF97A /* back1.png in Resources */,
 				1D0AE0391D37DBD30047FF10 /* back48*48.png in Resources */,
@@ -638,6 +647,7 @@
 				1D6DAC451D33C3D5006FEAA8 /* News.m in Sources */,
 				1D11CAA31D2F3EDF00DFC037 /* CustomVisualEffectView.m in Sources */,
 				1D0ADF591D34B5480047FF10 /* SDWebImageDownloaderOperation.m in Sources */,
+				1D1665851D3D1CB800D618B5 /* CircularLoaderView.m in Sources */,
 				1D0ADF5B1D34B5480047FF10 /* SDWebImagePrefetcher.m in Sources */,
 				1D6DAC361D33B2C4006FEAA8 /* NSObject+YYModel.m in Sources */,
 				1D0ADF301D34AF8C0047FF10 /* Calendar.m in Sources */,
@@ -725,7 +735,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREFIX_HEADER = "/Volumes/未命名/练习/JYNews/JYNews/PrefixHeader.pch";
+				GCC_PREFIX_HEADER = "/Volumes/未命名/练习/JYNews 3/JYNews/PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -769,7 +779,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREFIX_HEADER = "/Volumes/未命名/练习/JYNews/JYNews/PrefixHeader.pch";
+				GCC_PREFIX_HEADER = "/Volumes/未命名/练习/JYNews 3/JYNews/PrefixHeader.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class CircularLoaderView;
+
 @interface HomeViewController : UIViewController
+
+@property (nonatomic, strong) CircularLoaderView *loginView;
 
 @end
