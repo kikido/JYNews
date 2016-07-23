@@ -23,6 +23,7 @@
 #import "CustomVisualEffectView.h"
 #import "WXRefresh.h"
 #import "CircularLoaderView.h"
+#import "SetEffectView.h"
 
 //头视图的高度
 static const NSInteger KHeadViewHeight = 500;
@@ -60,6 +61,9 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     UITableView *_moreTabView;    //更多新闻里面的tableview
     
 }
+
+@property (nonatomic, strong)SetEffectView *setEffectView;  //设置视图
+
 
 @end
 
@@ -221,6 +225,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     
     return YES;
 }
+
 //创建tableview最后一个单元格
 - (void)creatFootView {
     //初始化_selnum;
@@ -319,7 +324,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     UIButton *calenButton = [UIButton buttonWithType:UIButtonTypeCustom];
     calenButton.frame = CGRectMake(KScreenWidth - 40, 15, 30, 30);
     [calenButton setImage:[UIImage imageNamed:@"date512*512.png"] forState:UIControlStateNormal];
-    [calenButton addTarget:self action:@selector(calendarButtonAction) forControlEvents:UIControlEventTouchUpInside];
+    [calenButton addTarget:self action:@selector(calendarAction) forControlEvents:UIControlEventTouchUpInside];
     [_footView addSubview:calenButton];
     
     [_footView addSubview:_countLabel];
@@ -843,7 +848,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
             
     }
     
-    NSLog(@"lashen %f",scrollView.contentSize.height);
+//    NSLog(@"lashen %f",scrollView.contentSize.height);
     
 }
 #pragma mark 创建倒计时界面下面的滑动视图,可切换新闻信息

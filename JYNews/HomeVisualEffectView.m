@@ -7,6 +7,7 @@
 //
 
 #import "HomeVisualEffectView.h"
+#import "SetEffectView.h"
 
 @interface HomeVisualEffectView () <UIScrollViewDelegate>
 {
@@ -16,6 +17,8 @@
     UIScrollView *_scrollView;
     NSInteger _state;  //暂时的状态
 }
+
+@property (nonatomic, strong) SetEffectView *setEffectView;
 
 @end
 
@@ -43,6 +46,14 @@
         [button addTarget:self action:@selector(buttonAction) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
         
+        UIButton *setButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        setButton.frame = CGRectMake(20, 20, 30, 30);
+        setButton.layer.cornerRadius = 15;
+//        setButton.backgroundColor = [UIColor redColor];
+        [setButton setImage:[UIImage imageNamed:@"setting32*32.png"] forState:UIControlStateNormal];
+        [setButton addTarget:self action:@selector(setAction) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:setButton];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(givetime) name:@"HomeStateChange" object:nil];
         
         
@@ -53,8 +64,33 @@
     return self;
     
 }
+//懒加载
+- (SetEffectView *)setEffectView {
+    
+    if (_setEffectView != nil) {
+        
+        return _setEffectView;
+    }
+    UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    _setEffectView = [[SetEffectView alloc] initWithEffect:effect withFrame:self.frame];
+    
+    return _setEffectView;
+    
+}
 
-
+- (void)setAction {
+    
+    [self addSubview:self.setEffectView];
+    self.setEffectView.hidden = YES;
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        
+        self.setEffectView.hidden = NO;
+        
+    } completion:nil];
+    
+    
+    
+}
 
 - (void)buttonAction {
     
