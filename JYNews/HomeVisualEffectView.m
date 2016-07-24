@@ -172,7 +172,8 @@
     //要画圆的那个layer
     CAShapeLayer *alayer = [CAShapeLayer layer];
     alayer.path = path.CGPath;
-    alayer.strokeColor = [UIColor blueColor].CGColor;
+    UIColor *fillCol = [UIColor colorWithRed:106/255.0 green:191/255.0 blue:250/255.0 alpha:0.6];
+    alayer.strokeColor = fillCol.CGColor;
     alayer.lineWidth = 3;
     alayer.fillColor = NULL;
     alayer.strokeStart = 0;

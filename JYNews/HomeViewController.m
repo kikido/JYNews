@@ -324,7 +324,7 @@ static const NSInteger kDistanceFromButtonToCell = 15;
     UIButton *calenButton = [UIButton buttonWithType:UIButtonTypeCustom];
     calenButton.frame = CGRectMake(KScreenWidth - 40, 15, 30, 30);
     [calenButton setImage:[UIImage imageNamed:@"date512*512.png"] forState:UIControlStateNormal];
-    [calenButton addTarget:self action:@selector(calendarAction) forControlEvents:UIControlEventTouchUpInside];
+    [calenButton addTarget:self action:@selector(calendarButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [_footView addSubview:calenButton];
     
     [_footView addSubview:_countLabel];
@@ -735,7 +735,18 @@ static const NSInteger kDistanceFromButtonToCell = 15;
 }
 
 #pragma mark 显示日历
+- (void)calendarButtonAction {
+    
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+        
+        _CusEffectView.transform = CGAffineTransformMakeTranslation(0, -KScreenHeight);
+        
+    } completion:nil];
+    
+}
+
 - (void)calendarAction {
+    
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionTransitionCurlUp animations:^{
         

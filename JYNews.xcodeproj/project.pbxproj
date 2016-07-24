@@ -104,6 +104,8 @@
 		1DEABAEA1D43AD4900EFF08B /* 229-tongue2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1DEABAD61D43AD4900EFF08B /* 229-tongue2.png */; };
 		1DEABAEB1D43AD4900EFF08B /* 226-smile.png in Resources */ = {isa = PBXBuildFile; fileRef = 1DEABAD71D43AD4900EFF08B /* 226-smile.png */; };
 		1DEABAEC1D43AD4900EFF08B /* 225-happy2.png in Resources */ = {isa = PBXBuildFile; fileRef = 1DEABAD81D43AD4900EFF08B /* 225-happy2.png */; };
+		1DEABB8D1D44F97200EFF08B /* EverDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DEABB8C1D44F97200EFF08B /* EverDay.m */; };
+		1DEABB8F1D44FAB300EFF08B /* back4.png in Resources */ = {isa = PBXBuildFile; fileRef = 1DEABB8E1D44FAB300EFF08B /* back4.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -258,6 +260,9 @@
 		1DEABAD61D43AD4900EFF08B /* 229-tongue2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "229-tongue2.png"; sourceTree = "<group>"; };
 		1DEABAD71D43AD4900EFF08B /* 226-smile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "226-smile.png"; sourceTree = "<group>"; };
 		1DEABAD81D43AD4900EFF08B /* 225-happy2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "225-happy2.png"; sourceTree = "<group>"; };
+		1DEABB8B1D44F97200EFF08B /* EverDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EverDay.h; sourceTree = "<group>"; };
+		1DEABB8C1D44F97200EFF08B /* EverDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EverDay.m; sourceTree = "<group>"; };
+		1DEABB8E1D44FAB300EFF08B /* back4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back4.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,6 +331,7 @@
 		1D0AE02C1D37DBD30047FF10 /* 图标 */ = {
 			isa = PBXGroup;
 			children = (
+				1DEABB8E1D44FAB300EFF08B /* back4.png */,
 				1DEABAC41D43AD4900EFF08B /* 素材 */,
 				1DEABAD41D43AD4900EFF08B /* 231-sad2.png */,
 				1DEABAD51D43AD4900EFF08B /* 230-sad.png */,
@@ -404,6 +410,7 @@
 		1D4AB45D1D2CB43F009EF7F5 /* Motto */ = {
 			isa = PBXGroup;
 			children = (
+				1DEABB8A1D44F96200EFF08B /* Model */,
 				1D4AB45E1D2CB448009EF7F5 /* Controller */,
 				1D11CA9D1D2F39D800DFC037 /* View */,
 			);
@@ -636,6 +643,15 @@
 			path = "素材";
 			sourceTree = "<group>";
 		};
+		1DEABB8A1D44F96200EFF08B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1DEABB8B1D44F97200EFF08B /* EverDay.h */,
+				1DEABB8C1D44F97200EFF08B /* EverDay.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -731,6 +747,7 @@
 				1D0AE03F1D37DBD30047FF10 /* setting32*32.png in Resources */,
 				1D0AE03D1D37DBD30047FF10 /* more64*64.png in Resources */,
 				1DEABAE71D43AD4900EFF08B /* setting32*32_2.png in Resources */,
+				1DEABB8F1D44FAB300EFF08B /* back4.png in Resources */,
 				1DEABAE31D43AD4900EFF08B /* more32*32.png in Resources */,
 				1D0AE03C1D37DBD30047FF10 /* more32*32.png in Resources */,
 				1DEABADB1D43AD4900EFF08B /* 101sun.png in Resources */,
@@ -788,6 +805,7 @@
 				1D0ADF5F1D34B5480047FF10 /* UIImage+WebP.m in Sources */,
 				1D8549C81D24015500C571CB /* UIViewExt.m in Sources */,
 				1D4AB4611D2CB45C009EF7F5 /* MottoViewController.m in Sources */,
+				1DEABB8D1D44F97200EFF08B /* EverDay.m in Sources */,
 				1D4AB49E1D2E1EDD009EF7F5 /* Model.xcdatamodeld in Sources */,
 				1D8549A81D23832200C571CB /* HomeViewController.m in Sources */,
 				1D0ADF6C1D373BE40047FF10 /* UIScrollView+PullUpRefresh.m in Sources */,
